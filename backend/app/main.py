@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any, Set
 import asyncio
 import json
+import os
 from app.config import settings
 from app.orchestrator import CrisisOrchestrator
 
@@ -26,17 +27,29 @@ connected_websockets: Set[WebSocket] = set()
 
 # Initialize Firebase if credentials exist
 firebase_enabled = False
-if settings.firebase_credentials_path and settings.firebase_database_url:
+firebase_db_url = settings.firebase_database_url or os.environ.get("FIREBASE_DATABASE_URL")
+
+if firebase_db_url:
     try:
         import firebase_admin
         from firebase_admin import credentials, db
         
-        cred = credentials.Certificate(settings.firebase_credentials_path)
-        firebase_admin.initialize_app(cred, {
-            'databaseURL': settings.firebase_database_url
-        })
-        firebase_enabled = True
-        print("[Firebase] Successfully connected to Firebase Realtime Database.")
+        # Check if credential JSON is provided as a raw env string (Render cloud setup)
+        cred_json_str = os.environ.get("FIREBASE_CREDENTIALS_JSON")
+        if cred_json_str:
+            import json
+            cred_dict = json.loads(cred_json_str)
+            cred = credentials.Certificate(cred_dict)
+            firebase_admin.initialize_app(cred, {'databaseURL': firebase_db_url})
+            firebase_enabled = True
+            print("[Firebase] Connected via credentials JSON string.")
+        # Or load from local file path
+        elif settings.firebase_credentials_path:
+            cred = credentials.Certificate(settings.firebase_credentials_path)
+            firebase_admin.initialize_app(cred, {'databaseURL': firebase_db_url})
+            firebase_enabled = True
+            print("[Firebase] Connected via credentials file path.")
+            
     except Exception as e:
         print(f"[Firebase] Initialization failed: {e}. Running local-only mode.")
 

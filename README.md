@@ -103,6 +103,21 @@ graph TD
    ```
    *Note: If running on an Android Emulator, select the settings cog in the top-right of the Flutter app and update the backend host to `10.0.2.2:8000` to route correctly to the local machine.*
 
+### 4. Cloud Deployment (Render.com)
+The backend can be deployed 24/7 in the cloud on Render.com:
+1. Log in to [Render.com](https://render.com) and create a new **Web Service**.
+2. Connect your GitHub repository `AnasKhan2310/CrisisSync`.
+3. Set the following settings:
+   - **Root Directory**: `backend`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+4. Add these Environment Variables under the service's **Environment** tab:
+   - `GEMINI_API_KEY`: The Gemini API Key (e.g., `AIzaSyDdQvMkIVX0eOV267GCnbh33prVvm23nBk`)
+   - `FIREBASE_DATABASE_URL`: The Firebase Realtime Database URL (e.g., `https://crisissync-90c4b-default-rtdb.firebaseio.com/`)
+   - `FIREBASE_CREDENTIALS_JSON`: The raw string contents of `firebase_key.json`
+5. Deploy the web service. Render will provide a secure HTTPS/WSS URL (e.g. `https://crisissync-backend.onrender.com`).
+6. Open the settings dialog in the Flutter app and enter your new Render domain name to connect remotely!
+
 ---
 
 ## Core Agents

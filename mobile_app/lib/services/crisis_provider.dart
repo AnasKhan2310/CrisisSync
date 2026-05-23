@@ -35,8 +35,22 @@ class CrisisProvider extends ChangeNotifier {
   bool get isSimulating => _isSimulating;
   String get backendHost => _backendHost;
 
+  bool get _isSecure => !_backendHost.startsWith("localhost") && 
+                        !_backendHost.startsWith("127.0.0.1") && 
+                        !_backendHost.startsWith("10.0.2.2");
+
+  String get _httpScheme => _isSecure ? "https://" : "http://";
+  String get _wsScheme => _isSecure ? "wss://" : "ws://";
+
   void updateBackendHost(String host) {
-    _backendHost = host;
+    String cleanHost = host.trim();
+    if (cleanHost.startsWith("http://")) cleanHost = cleanHost.substring(7);
+    if (cleanHost.startsWith("https://")) cleanHost = cleanHost.substring(8);
+    if (cleanHost.startsWith("ws://")) cleanHost = cleanHost.substring(5);
+    if (cleanHost.startsWith("wss://")) cleanHost = cleanHost.substring(6);
+    if (cleanHost.endsWith("/")) cleanHost = cleanHost.substring(0, cleanHost.length - 1);
+
+    _backendHost = cleanHost;
     _wsService?.disconnect();
     _wsService = null;
     initialize();
@@ -44,7 +58,7 @@ class CrisisProvider extends ChangeNotifier {
   }
 
   void initialize() {
-    final wsUrl = "ws://$_backendHost/ws/live";
+    final wsUrl = "$_wsScheme$_backendHost/ws/live";
     _wsService = WebSocketService(url: wsUrl);
     
     _wsService!.onConnected = () {
@@ -101,7 +115,7 @@ class CrisisProvider extends ChangeNotifier {
 
   Future<void> fetchIncidentsHistory() async {
     try {
-      final response = await http.get(Uri.parse("http://$_backendHost/api/incidents"));
+      final response = await http.get(Uri.parse("$_httpScheme$_backendHost/api/incidents"));
       if (response.statusCode == 200) {
         final List list = jsonDecode(response.body);
         _incidentsHistory = list.map((e) => Incident.fromJson(e)).toList();
@@ -121,7 +135,7 @@ class CrisisProvider extends ChangeNotifier {
 
       // Trigger simulation via REST API (or we can use WebSocket)
       final response = await http.post(
-        Uri.parse("http://$_backendHost/api/simulate"),
+        Uri.parse("$_httpScheme$_backendHost/api/simulate"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"signals": signals}),
       );
