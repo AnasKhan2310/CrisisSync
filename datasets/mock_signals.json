@@ -1,0 +1,58 @@
+{
+  "flooding_g10": [
+    {
+      "source": "social",
+      "content": "G-10 mein pani bhar gaya hai, gaariyan phans gayi hain!"
+    },
+    {
+      "source": "weather",
+      "content": "HEAVY RAIN WARNING: Severe thunderstorm cell active over Sector G-10 and G-11. Accumulation up to 60mm."
+    },
+    {
+      "source": "traffic",
+      "content": "Traffic congestion alert: Vehicles stationary near G-10 Markaz outer ring due to deep water pooling."
+    }
+  ],
+  "flooding_georgetown": [
+    {
+      "source": "social",
+      "content": "Flash flood happening at George Town for past 30 mins, drainage is fully blocked."
+    },
+    {
+      "source": "social",
+      "content": "Cars stuck due to flood under George Town flyover. Water levels rising rapidly."
+    },
+    {
+      "source": "weather",
+      "content": "Heavy rainfall alert for George Town metropolitan corridor."
+    },
+    {
+      "source": "traffic",
+      "content": "Traffic congestion spike detected around George Town main underpass."
+    }
+  ],
+  "accident_saddar": [
+    {
+      "source": "social",
+      "content": "Saddar Metro Station Chowk pe gaariyon ki takkar hui hai, road completely block hai."
+    },
+    {
+      "source": "traffic",
+      "content": "Accident anomaly: Murree Road Saddar corridor choked. Speed reduced to 5 km/h."
+    },
+    {
+      "source": "emergency_report",
+      "content": "Caller reports 2-car collision near Saddar Commercial Plaza. Emergency crew dispatch requested."
+    }
+  ],
+  "heatwave": [
+    {
+      "source": "weather",
+      "content": "MET ADV_04: Extreme heatwave warning. Ambient temperature in metropolitan center peaking at 45.8C. Low humidity."
+    },
+    {
+      "source": "social",
+      "content": "Severe heat in Saddar commercial center. People collapsing due to sunstroke. We need immediate cooling camps!"
+    }
+  ]
+}
