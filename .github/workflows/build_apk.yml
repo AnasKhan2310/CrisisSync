@@ -1,0 +1,44 @@
+name: Build Android Release APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions UI
+
+jobs:
+  build:
+    name: Build APK on Cloud
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Get Dependencies
+        run: |
+          cd mobile_app
+          flutter pub get
+
+      - name: Build Release APK
+        run: |
+          cd mobile_app
+          flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CrisisSync-Release-APK
+          path: mobile_app/build/app/outputs/flutter-apk/app-release.apk
